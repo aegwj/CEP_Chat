@@ -11,9 +11,10 @@ import emojiimg from "../../assets/emoji.png";
 import { openLinkInBrowser } from '../../lib/utils/bolt';
 import axios from 'axios';
 import { evalES } from '../../lib/utils/bolt';
+import moment from 'moment';
 
 interface ChatProps {
-  currentUser: { id: string; avatar: string };
+  currentUser: { id: string; avatar: string; };
   chats: any[];
   addMessage: (message: string) => void;
   handleLogout: () => void;
@@ -36,27 +37,21 @@ const Chat: React.FC<ChatProps> = ({ currentUser, chats, addMessage, handleLogou
     setOpen(false);
   };
 
-
-  // 退出登录
   const handleSettingsClick = () => {
+    // 退出登录的处理逻辑
+  };
 
-  }
-  // 链接官网
   const handleButtonClick = () => {
-    const urlToOpen = "https://www.aegwj.com"; // The URL you want to open
+    const urlToOpen = "https://www.aegwj.com"; // 要打开的 URL
     openLinkInBrowser(urlToOpen);
   };
 
-
-  // 图片双击下载并导入AE
-  const handleImageDoubleClick = async (imageUrl:any) => {
-    const imageName = imageUrl.split('/').pop(); // 获取imageUrl的基本名称
+  const handleImageDoubleClick = async (imageUrl: any) => {
+    const imageName = imageUrl.split('/').pop(); // 获取 imageUrl 的基本名称
 
     try {
-      // 发起网络请求获取图片数据
       const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
 
-      // 检查文件夹是否存在，如果不存在则创建
       const desktopFolderPath = "E:/果味酱CG小屋(aegwj.com)"; // 本地文件夹路径
       const dirExists = window.cep.fs.stat(desktopFolderPath).err === window.cep.fs.NO_ERROR;
 
@@ -64,16 +59,12 @@ const Chat: React.FC<ChatProps> = ({ currentUser, chats, addMessage, handleLogou
         window.cep.fs.makedir(desktopFolderPath, window.cep.fs.PERMISSION_READ | window.cep.fs.PERMISSION_WRITE);
       }
 
-      // 拼接图片保存的完整路径
       const imagePath = `${desktopFolderPath}/${imageName}`;
-
-      // 写入文件
       const fs = require('fs');
       const buffer = Buffer.from(response.data as ArrayBuffer);
 
       fs.writeFileSync(imagePath, buffer);
 
-      // 导入AE
       const escapedImagePath = imagePath.replace(/\\/g, "\\\\");
       evalES(
         `
@@ -91,33 +82,11 @@ const Chat: React.FC<ChatProps> = ({ currentUser, chats, addMessage, handleLogou
       `,
         true
       );
-      // alert(`${imageName} downloaded and imported to AE`); // 下载成功提示
-
     } catch (error) {
       console.error('Error downloading or importing image:', error);
     }
-    
-
   };
 
-
-  // 格式化日期
-  const formatDateTime = (datetime: Date) => {
-    const options: Intl.DateTimeFormatOptions = {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    };
-    const formatter = new Intl.DateTimeFormat(undefined, options);
-    const formattedDate = formatter.format(datetime);
-    const today = new Date();
-    return datetime.toDateString() === today.toDateString() ? formatter.format(datetime) : `${formattedDate} ${formatter.format(datetime)}`;
-  };
-
-
-  // 发送图片
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
       const selectedFile = e.target.files[0];
@@ -160,7 +129,7 @@ const Chat: React.FC<ChatProps> = ({ currentUser, chats, addMessage, handleLogou
       reader.readAsDataURL(selectedFile);
     }
   };
-  // 发送消息
+
   const handleSendMessage = async () => {
     if (text.trim() !== "" || file) {
       let message = text;
@@ -188,7 +157,6 @@ const Chat: React.FC<ChatProps> = ({ currentUser, chats, addMessage, handleLogou
 
   return (
     <div className="chat">
-      {/* Top section */}
       <div className="top">
         <div className="user">
           <img src={`http://localhost:3001${currentUser.avatar}` || avatar} alt="Avatar" />
@@ -205,18 +173,19 @@ const Chat: React.FC<ChatProps> = ({ currentUser, chats, addMessage, handleLogou
         </div>
       </div>
 
-      {/* Image preview section */}
       {filePreview && (
         <div className="image-preview">
           <img src={filePreview} alt="Preview" />
         </div>
       )}
 
-      {/* Chat messages display section */}
       <div className="center">
         {chats.map((chat, index) => (
           <div key={index} className={`message ${chat.username === currentUser.id ? "own" : "other"}`}>
-            <img src={`http://localhost:3001${chat.avatar}` || avatar} alt="Avatar" className="avatar" />
+            <div className="user-info">
+              <img src={`http://localhost:3001${chat.avatar}` || avatar} alt="Avatar" className="avatar" />
+              <span className="username">{chat.username}</span>
+            </div>
             <div className={`bubble ${chat.username === currentUser.id ? "own" : ""}`}>
               {chat.message.includes('[file]:') ? (
                 <img
@@ -228,14 +197,13 @@ const Chat: React.FC<ChatProps> = ({ currentUser, chats, addMessage, handleLogou
               ) : (
                 <p>{chat.message}</p>
               )}
-              <span>{formatDateTime(new Date(chat.createdAt))}</span>
+              <span className="timestamp">{moment(chat.timestamp).format('YYYY-MM-DD HH:mm:ss')}</span>
             </div>
           </div>
         ))}
         <div ref={endRef}></div>
       </div>
 
-      {/* Bottom input section */}
       <div className="bottom">
         <div className="icons">
           <label htmlFor="file-upload">

@@ -6,7 +6,6 @@ import Chat from "../components/Chat/Chat";
 import "./main.scss";
 import io from "socket.io-client";
 import { registerUser, loginUser } from "../utils/api";
-import ImageComponent from "../components/test"
 const Main = () => {
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const [user, setUser] = useState(localStorage.getItem("user") || "");
@@ -72,7 +71,6 @@ const Main = () => {
 
   return (
     <div className="main">
-      <ImageComponent />
       {isLogin ? (
         <div className="chat-container">
           <Chat

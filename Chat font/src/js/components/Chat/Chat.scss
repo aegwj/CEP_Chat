@@ -40,6 +40,11 @@
           font-size: 14px;
           color: #ffffff;
         }
+        button {
+          padding: 10px;
+          border-radius: 10px;
+          background-color: #1a73e8;
+        }
       }
     }
 
@@ -65,56 +70,65 @@
     gap: 20px;
 
     .message {
-      display: flex;
-      gap: 20px;
-
-      &.own {
-        align-self: flex-end;
-
-        .bubble {
-          background-color: #5183fe;
-          color: white; // 自己的消息文字颜色
-
-        }
-                               
-      }
-
-      .avatar {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        object-fit: cover;
-      }
-
-      .bubble {
-        flex: 1;
         display: flex;
         flex-direction: column;
-        gap: 5px;
-        padding: 10px;
-        border-radius: 10px;
-        background-color: rgba(17, 25, 40, 0.3);
-
-        p {
-          margin: 0;
-          max-width: 100%; // 文本最大宽度
-          word-wrap: break-word; // 换行处理
+        gap: 20px;
+    
+        &.own {
+          align-self: flex-end;
+    
+          .bubble {
+            background-color: #5183fe;
+            color: white; // 自己的消息文字颜色
+          }
         }
-
-        span {
-          font-size: 12px;
-          color: #999;
+    
+        .user-info {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 10px;
+    
+          .avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+          }
+    
+          .username {
+            font-weight: bold;
+          }
         }
-
-        img.chat-image {
-          max-width: 100%; // 图片最大宽度
-          max-height: 300px; // 图片最大高度
-          border-radius: 5px;
-          object-fit: contain;
+    
+        .bubble {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          gap: 5px;
+          padding: 10px;
+          border-radius: 10px;
+          background-color: rgba(17, 25, 40, 0.3);
+    
+          p {
+            margin: 0;
+            max-width: 100%; // 文本最大宽度
+            word-wrap: break-word; // 换行处理
+          }
+    
+          span {
+            font-size: 12px;
+            color: #999;
+          }
+    
+          img.chat-image {
+            max-width: 100%; // 图片最大宽度
+            max-height: 300px; // 图片最大高度
+            border-radius: 5px;
+            object-fit: contain;
+          }
         }
-        
       }
-    }
 
     /* 滚动到最新消息的参考元素 */
     .scroll-to-bottom {
