@@ -1,4 +1,5 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
+import { StoreContext } from '../../utils/userStore';
 import './Chat.scss';
 import EmojiPicker from "emoji-picker-react";
 import img from "../../assets/img.png";
@@ -25,7 +26,7 @@ const Chat: React.FC<ChatProps> = ({ currentUser, chats, addMessage, handleLogou
   const [text, setText] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
-
+  const {url} = useContext(StoreContext);
   const endRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -139,9 +140,9 @@ const Chat: React.FC<ChatProps> = ({ currentUser, chats, addMessage, handleLogou
         formData.append('file', file);
 
         try {
-          const response = await axios.post('http://localhost:3001/upload-file', formData);
+          const response = await axios.post(url+'/upload-file', formData);
           const imageUrl = response.data.url;
-          message += ` ![file preview](${filePreview}) [file]: http://localhost:3001${imageUrl}`; // 将预览图像的 URL 包含在消息中
+          message += ` ![file preview](${filePreview}) [file]: ${url}${imageUrl}`; // 将预览图像的 URL 包含在消息中
           setFile(null);
           setFilePreview(null);
         } catch (error) {
@@ -159,7 +160,7 @@ const Chat: React.FC<ChatProps> = ({ currentUser, chats, addMessage, handleLogou
     <div className="chat">
       <div className="top">
         <div className="user">
-          <img src={`http://localhost:3001${currentUser.avatar}` || avatar} alt="Avatar" />
+          <img src={`${url}${currentUser.avatar}` || avatar} alt="Avatar" />
           <div className="texts">
             <span>{currentUser.id}</span>
             <p>果味酱CG小屋，专注影视后期资源，CG技术
@@ -183,7 +184,7 @@ const Chat: React.FC<ChatProps> = ({ currentUser, chats, addMessage, handleLogou
         {chats.map((chat, index) => (
           <div key={index} className={`message ${chat.username === currentUser.id ? "own" : "other"}`}>
             <div className="user-info">
-              <img src={`http://localhost:3001${chat.avatar}` || avatar} alt="Avatar" className="avatar" />
+              <img src={`${url}${chat.avatar}` || avatar} alt="Avatar" className="avatar" />
               <span className="username">{chat.username}</span>
             </div>
             <div className={`bubble ${chat.username === currentUser.id ? "own" : ""}`}>

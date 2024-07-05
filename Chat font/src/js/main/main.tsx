@@ -1,20 +1,23 @@
 // Main.tsx
 
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import Login from "../components/Login/Login";
 import Chat from "../components/Chat/Chat";
 import "./main.scss";
 import io from "socket.io-client";
 import { registerUser, loginUser } from "../utils/api";
+
+import { StoreContext } from "../utils/userStore";
 const Main = () => {
   const [isLogin, setIsLogin] = useState<boolean>(false);
   const [user, setUser] = useState(localStorage.getItem("user") || "");
   const [socketio, setSocketio] = useState<any>(null);
   const [chats, setChats] = useState<any[]>([]);
+  const { url } = useContext(StoreContext);
 
   useEffect(() => {
     if (user) {
-      const socket = io("http://localhost:3001");
+      const socket = io(url);
       setSocketio(socket);
 
       socket.on("chat", (chats: any[]) => {

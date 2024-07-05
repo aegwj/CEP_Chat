@@ -7,6 +7,7 @@ import avatarImg from "../../assets/avatar.png";
 import { StoreContext } from "../../utils/userStore.jsx";
 import React, { FormEvent } from 'react';
 
+
 interface Avatar {
   file: File | null,
   url: string
@@ -23,6 +24,8 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   });
   const [isLoginMode, setIsLoginMode] = useState(true); // 增加状态切换登录和注册模式
 
+  const {url} = useContext(StoreContext);
+
   const handleAvatar = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files?.[0]) {
       setAvatar({
@@ -37,7 +40,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     formData.append("avatar", file);
 
     try {
-      const response = await axios.post<{ url: string }>("http://localhost:3001/upload-avatar", formData);
+      const response = await axios.post<{ url: string }>(url +"/upload-avatar", formData);
       return response.data.url;
     } catch (err: any) {
       throw new Error(err.response.data.error);
@@ -58,7 +61,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
         imgUrl = await uploadFile(avatar.file);
       }
 
-      const response = await axios.post("http://localhost:3001/register", {
+      const response = await axios.post(url+ "/register", {
         username,
         email,
         password,
@@ -82,7 +85,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     const password = formData.get("password") as string;
 
     try {
-      const response = await axios.post('http://localhost:3001/login', { email, password });
+      const response = await axios.post(url+'/login', { email, password });
 
       toast.success("登录成功!");
 
