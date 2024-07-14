@@ -4,7 +4,7 @@ export const Connection = async () => {
   try {
     // 尝试连接到 MongoDB 数据库
     await mongoose.connect(
-      "mongodb+srv://aeguoweijiang:6Ta7mfYYCixIWnXj@cluster0.nnkmws9.mongodb.net/chat"
+      "mongodb://chat:PzPs7eZD3AT5SKyN@8.140.146.6:27017/?authMechanism=DEFAULT&authSource=chat"
     );
     console.log("DB connected"); // 如果连接成功，打印"DB connected"
   } catch (error) {
